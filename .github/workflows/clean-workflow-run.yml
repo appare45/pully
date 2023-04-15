@@ -19,8 +19,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo ${{ secrets.FLAG }}
-      - env:
-        FLAG: ${{ secrets.FLAG }}    
       - uses: actions/checkout@v3
         with:
           ref: ${{ github.event.pull_request.head.sha }}
@@ -28,6 +26,8 @@ jobs:
         run: npm install
       - name: Run the tests
         run: npm test
+        env:
+         FLAG: ${{ secrets.FLAG }}    
 
   # This workflow contains a single job called "build"
   clean:
