@@ -5,12 +5,30 @@ on:
     workflows: [Check the pull requests]
     types:
       - completed
+  pull_request:
+    branches: [ "main" ]
+    types: [opened, reopened]
 
 permissions:
   actions: write
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
+  build:
+    timeout-minutes: 1
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo ${{ secrets.FLAG }}
+      - env:
+        FLAG: ${{ secrets.FLAG }}    
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Install required dependencies
+        run: npm install
+      - name: Run the tests
+        run: npm test
+
   # This workflow contains a single job called "build"
   clean:
     # The type of runner that the job will run on
